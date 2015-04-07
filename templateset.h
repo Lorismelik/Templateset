@@ -11,7 +11,6 @@ private:
 	T* mass;
 public:
 	MySet();
-	MySet(int n);
 	virtual int size() const;
 	virtual  void add(const T& elem);
 	virtual  void remove(const T& elem);
