@@ -1,4 +1,3 @@
-# Templateset
 #pragma once
 #include <iostream>
 using namespace std;
@@ -55,7 +54,7 @@ public:
 	}
 	template <class T>  void MySet<T>::add(const T& elem)
 	{
-		T* t = new int[sizeset+1];
+		T* t = new T[sizeset+1];
 		for (int i = 0; i < sizeset; i++)
 		{
 			t[i] = mass[i];
@@ -65,6 +64,7 @@ public:
 				return;
 			}
 		}
+		delete[] mass;
 		t[sizeset] = elem;
 		mass = t;
 		sizeset++;
@@ -99,14 +99,18 @@ public:
 	}
 	template <class T>	void MySet<T>::remove(const T& elem)
 	{
+		T* t = new T[sizeset - 1];
 		for (int i = 0; ; i++)
 		{
+			t[i] = mass[i];
 			if (mass[i] == elem)
 			{
 				for (int j = i; j < sizeset - 1; j++)
 				{
-					mass[j] = mass[j + 1];
+					t[j] = mass[j + 1];
 				}
+				delete[] mass;
+				mass = t;
 				sizeset--;
 				return;
 			}   
