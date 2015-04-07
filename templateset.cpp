@@ -1,13 +1,6 @@
 # Templateset
 #pragma once
-#include "StdAfx.h"
 #include <iostream>
-#include <windows.h>
-#include <stdio.h>
-#include <conio.h>
-#include <iomanip>
-#include <time.h>
-#include <string>
 using namespace std;
 
 template <class T> class ISet {
