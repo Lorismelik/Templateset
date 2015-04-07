@@ -23,37 +23,8 @@ public:
 template <class T> MySet<T>::MySet() //  Выделяется память под 1 элемент
 {
 	sizeset = 0;
-}
-template <class T> MySet<T>::MySet(int n) // Выделяется память под заданное количество элементов, повторяющиеся элементы не записываютс, и память под них не выделяется
-{
-	sizeset = n;
-	mass = new T[sizeset];
-	for (int i = 0; i < sizeset; i++)
-	{
-		T elem;
-		cin >> elem;
-		mass[i] = elem;
-		for (int j = 0; j < i; j++)
-		{
-			if (elem == mass[j])
-			{
-				sizeset--;
-				i--;
-				break;
-			}
-		}
-	}
-	if (n != sizeset)
-	{
-		T* t = new T[sizeset];
-		for (int i = 0; i < sizeset; i++)
-		{
-			t[i] = mass[i];
-		}
-		delete[] mass;
-		mass = t;
-	}
-}
+	mass = new T[1];
+};
 template <class T>  int MySet<T>::size() const
 {
 	int d = (int)sizeset;
