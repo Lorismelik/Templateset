@@ -19,11 +19,11 @@ public:
 	 template <class T> friend ostream& operator << (ostream& out, const MySet<T>& a);
 	~MySet();
 };
-	template <class T> MySet<T>::MySet()
+	template <class T> MySet<T>::MySet() //  Выделяется память под 1 элемент
 	{
 		sizeset = 0;
 	}
-	template <class T> MySet<T>::MySet(int n)
+	template <class T> MySet<T>::MySet(int n) // Выделяется память под заданное количество элементов, повторяющиеся элементы не записываютс, и память под них не выделяется
 	{
 		sizeset = n;
 			mass = new T[sizeset];
@@ -58,12 +58,12 @@ public:
 		int d = (int)sizeset;
 		return d;
 	}
-	template <class T>  void MySet<T>::add(const T& elem)
+	template <class T>  void MySet<T>::add(const T& elem) 
 	{
-		T* t = new T[sizeset+1];
+		T* t = new T[sizeset+1];    // Выделяется память под новый элемент
 		if (sizeset != 0)
 		{
-			for (int i = 0; i < sizeset; i++)
+			for (int i = 0; i < sizeset; i++) При добавлении проверяются все элементы в множестве, чтобы не было повторяющихся элементов O(N)
 			{
 				t[i] = mass[i];
 				if (mass[i] == elem)
@@ -108,8 +108,8 @@ public:
 	}
 	template <class T>	void MySet<T>::remove(const T& elem)
 	{
-		T* t = new T[sizeset - 1];
-		for (int i = 0; ; i++)
+		T* t = new T[sizeset - 1]; 
+		for (int i = 0; ; i++)            При удалении проверяются все элементы в множестве пока не будет найден нужный или до конца O(N)
 		{
 			if (mass[i] == elem)
 			{
