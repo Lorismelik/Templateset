@@ -9,12 +9,14 @@ public ISet<T>
 private:
 	int sizeset;
 	T* mass;
+	int capacity;
 public:
 	MySet();
+	MySet(const MySet<T>& a);
 	virtual int size() const;
 	virtual  void add(const T& elem);
 	virtual  void remove(const T& elem);
-	T& operator [](int index);
+	MySet<T>& operator =(const MySet<T>& a);
 	virtual  bool contains(const T& elem) const;
 	template <class T> friend ostream& operator << (ostream& out, const MySet<T>& a);
 	~MySet();
@@ -23,7 +25,16 @@ template <class T> MySet<T>::MySet() //  Выделяется память по�
 {
 	sizeset = 0;
 	mass = new T[1];
+	capacity = 1;
 };
+template <class T> MySet<T>::MySet(const MySet<T>& a)
+{
+	sizeset = a.sizeset;
+	capacity = sizeset + 1;
+	mass = new T[capacity];
+	for (int i = 0; i<sizeset; i++)
+		mass[i] = a.mass[i];
+}
 template <class T>  int MySet<T>::size() const
 {
 	int d = (int)sizeset;
@@ -31,22 +42,26 @@ template <class T>  int MySet<T>::size() const
 }
 template <class T>  void MySet<T>::add(const T& elem)
 {
-	T* t = new T[sizeset + 1];    // Выделяется память под новый элемент
-	if (sizeset != 0)
+	if (contains(elem) == true)
 	{
-		for (int i = 0; i < sizeset; i++) //При добавлении проверяются все элементы в множестве, чтобы не было повторяющихся элементов O(N)
-		{
-			t[i] = mass[i];
-			if (mass[i] == elem)
-			{
-				return;
-			}
-		}
+		return;
 	}
-	delete[] mass;
-	t[sizeset] = elem;
-	mass = t;
-	sizeset++;
+	else
+	{
+		if (sizeset == capacity)
+		{
+			T* t;
+			capacity *= 2;
+			t = new T[capacity];
+			for (int i = 0; i < sizeset; i++)
+				t[i] = mass[i];
+			if (mass!=0)
+				delete[] mass;
+			mass = t;
+		}
+		mass[sizeset] = elem;
+		sizeset++;
+	}
 }
 template <class T>  bool MySet<T>::contains(const T& elem) const
 {
@@ -60,11 +75,20 @@ template <class T>  bool MySet<T>::contains(const T& elem) const
 	}
 	return false;
 }
-template <class T> T& MySet<T>::operator[](int index)
+template <class T> MySet<T>& MySet<T>::operator=(const MySet<T>& a)
 {
-	if (index<sizeset) return mass[index];
-	else  throw Exception();
+	sizeset = a.sizeset;
+	capacity = sizeset + 1;
+	if (sizeset != 0)
+	{
+		if (mass != 0) delete[] mass;
+		mass = new T[capacity];
+		for (int i = 0; i<sizeset; i++)
+			mass[i] = a.mass[i];
+	}
+	return *this;
 }
+
 template <class T> ostream& operator <<(ostream& out, const MySet<T>& a)
 {
 	if (a.sizeset == 0)
@@ -78,25 +102,15 @@ template <class T> ostream& operator <<(ostream& out, const MySet<T>& a)
 }
 template <class T>	void MySet<T>::remove(const T& elem)
 {
-	T* t = new T[sizeset - 1];
-	for (int i = 0;; i++)           // При удалении проверяются все элементы в множестве пока не будет найден нужный или до конца O(N)
+	int i = 0;
+	for (i ; mass[i] != elem && i < sizeset; i++);
+	if (i == sizeset && mass[sizeset] != elem)
 	{
-		if (mass[i] == elem)
-		{
-			if (sizeset != 1)
-			{
-				for (int j = i; j < sizeset - 1; j++)
-				{
-					t[j] = mass[j + 1];
-				}
-			}
-			delete[] mass;
-			mass = t;
-			sizeset--;
-			return;
-		}
-		t[i] = mass[i];
-	}
+		return;
+	};
+	for (int j = i; j < sizeset - 1; j++) 
+		mass[j] = mass[j + 1];         
+	sizeset--;
 }
 template <class T> MySet<T>::~MySet()
 {
