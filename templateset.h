@@ -21,14 +21,14 @@ public:
 	template <class T> friend ostream& operator << (ostream& out, const MySet<T>& a);
 	~MySet();
 };
-template <class T> MySet<T>::MySet() //  Выделяется память под 1 элемент
+template <class T> MySet<T>::MySet() //  Выделяется память под 1 элемент.
 {
 	sizeset = 0;
 	mass = new T[1];
 	capacity = 1;
 };
-template <class T> MySet<T>::MySet(const MySet<T>& a)
-{
+template <class T> MySet<T>::MySet(const MySet<T>& a) // Выделяется память на еще один дополнительный элемент отностильно 
+{                                                     // изначального множества.
 	sizeset = a.sizeset;
 	capacity = sizeset + 1;
 	mass = new T[capacity];
@@ -40,16 +40,16 @@ template <class T>  int MySet<T>::size() const
 	int d = (int)sizeset;
 	return d;
 }
-template <class T>  void MySet<T>::add(const T& elem)
+template <class T>  void MySet<T>::add(const T& elem)      
 {
-	if (contains(elem) == true)
+	if (contains(elem) == true)           //Количество операций при переборе равно количеству операций функции contains.
 	{
 		return;
 	}
 	else
 	{
-		if (sizeset == capacity)
-		{
+		if (sizeset == capacity)     //Когда количество реальных элементов достигает количеству выделенной памяти
+		{                            //под все элементы множества, количество выделенной памяти удваивается.
 			T* t;
 			capacity *= 2;
 			t = new T[capacity];
@@ -63,9 +63,9 @@ template <class T>  void MySet<T>::add(const T& elem)
 		sizeset++;
 	}
 }
-template <class T>  bool MySet<T>::contains(const T& elem) const
+template <class T>  bool MySet<T>::contains(const T& elem) const 
 {
-	for (int i = 0; i < sizeset; i++)
+	for (int i = 0; i < sizeset; i++) //Количетво операций при переборе в среднем равняется (N+1)/2.
 	{
 		if (mass[i] == elem)
 		{
@@ -100,10 +100,10 @@ template <class T> ostream& operator <<(ostream& out, const MySet<T>& a)
 		out << a.mass[i] << " ";
 	return out;
 }
-template <class T>	void MySet<T>::remove(const T& elem)
-{
+template <class T>	void MySet<T>::remove(const T& elem) // Производится поиск указанного элемента в множестве помощью
+{                                                            // прямого перебора. Сложность O(N).
 	int i = 0;
-	for (i ; mass[i] != elem && i < sizeset; i++);
+	for (i ; mass[i] != elem && i < sizeset; i++); 
 	if (i == sizeset && mass[sizeset] != elem)
 	{
 		return;
