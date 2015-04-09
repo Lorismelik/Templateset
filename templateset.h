@@ -1,119 +1,151 @@
-#pragma once
-#include <iostream>
+
 #include "Iset.h"
-using namespace std;
 class Exception {};
-template <class T> class MySet :
-public ISet<T>
+template <typename T> class MySet :
+public  ISet<T> 
 {
-private:
-	int sizeset;
-	T* mass;
-	int capacity;
-public:
-	MySet();
-	MySet(const MySet<T>& a);
-	virtual int size() const;
-	virtual  void add(const T& elem);
-	virtual  void remove(const T& elem);
-	MySet<T>& operator =(const MySet<T>& a);
-	virtual  bool contains(const T& elem) const;
-	template <class T> friend ostream& operator << (ostream& out, const MySet<T>& a);
-	~MySet();
-};
-template <class T> MySet<T>::MySet() //  Выделяется память под 1 элемент.
-{
-	sizeset = 0;
-	mass = new T[1];
-	capacity = 1;
-};
-template <class T> MySet<T>::MySet(const MySet<T>& a) // Выделяется память на еще один дополнительный элемент отностильно 
-{                                                     // изначального множества.
-	sizeset = a.sizeset;
-	capacity = sizeset + 1;
-	mass = new T[capacity];
-	for (int i = 0; i<sizeset; i++)
-		mass[i] = a.mass[i];
-}
-template <class T>  int MySet<T>::size() const
-{
-	int d = (int)sizeset;
-	return d;
-}
-template <class T>  void MySet<T>::add(const T& elem)      
-{
-	if (contains(elem) == true)           //Количество операций при переборе равно количеству операций функции contains.
+	class Node
 	{
-		return;
-	}
-	else
-	{
-		if (sizeset == capacity)     //Когда количество реальных элементов достигает количеству выделенной памяти
-		{                            //под все элементы множества, количество выделенной памяти удваивается.
-			T* t;
-			capacity *= 2;
-			t = new T[capacity];
-			for (int i = 0; i < sizeset; i++)
-				t[i] = mass[i];
-			if (mass!=0)
-				delete[] mass;
-			mass = t;
+		friend class MySet;
+		T * value;
+		Node * parent;
+		Node * left;
+		Node * right;
+		Node(const T & elem, Node * p = 0) : parent(p), left(0), right(0) 
+		{
+			value = new T(elem);
 		}
-		mass[sizeset] = elem;
+		~Node()
+		{
+			delete value;
+		}
+	};
+	int sizeset;
+	Node * seed;
+
+	bool insertNode(const T & elem, Node * & n, Node * p = 0)
+	{
+		if (!n)
+		{
+			n = new Node(elem, p);
+			return true;
+		}
+		else if (*(n->value) > elem)
+			return insertNode(elem, n->left, n);
+		else if (*(n->value) < elem)
+			return insertNode(elem, n->right, n);
+		else
+			return false;
+	}
+
+	void insertTree(Node * & n, Node * t)
+	{
+		if (!n || !t)
+			return;
+		insertTree(n, t->left);
+		insertTree(n, t->right);
+		insertNode(*(t->value), n);
+	}
+
+	void delTree(Node * n){
+		if (!n)
+			return;
+		delTree(n->left);
+		delTree(n->right);
+		delete n;
+		n = 0;
+	}
+
+	Node * findNode(const T & elem, Node * n) {
+		if (!n)
+			return 0;
+		else if (*(n->value) == elem)
+			return n;
+		else if (*(n->value) > elem)
+			return findNode(elem, n->left);
+		else
+			return findNode(elem, n->right);
+	}
+
+
+	// закрытый конструктор копирования
+    MySet(const MySet &);
+	MySet operator = (const MySet &);
+
+public:
+ 	MySet() : seed(0);
+	virtual void add(const T & elem);
+	virtual void remove(const T & elem);
+	virtual int size() const;
+	virtual  bool contains(const T& elem) const;
+	~MySet();
+
+};
+
+template <typename T> MySet<T>::MySet() : seed(0)
+{
+	sizeset = 0; 
+}
+
+template <typename T> MySet<T>::~MySet()
+{
+	delTree(seed);
+}
+template <typename T> void MySet<T>::add(const T & elem){
+		if (!insertNode(elem, seed))
+			throw Exception();
 		sizeset++;
 	}
-}
-template <class T>  bool MySet<T>::contains(const T& elem) const 
+
+template <typename T> void MySet<T>::remove(const T & elem)
 {
-	for (int i = 0; i < sizeset; i++) //Количетво операций при переборе в среднем равняется (N+1)/2.
+	Node * n = findNode(elem, seed);
+	if (!n)
 	{
-		if (mass[i] == elem)
+		throw Exception();
+	}
+	else if (n == seed)
+	{
+		if (!n->right)
+		{
+			Node * aseed = n->left;
+			delete seed;
+			if (seed = aseed)
+				seed->parent = 0;
+		}
+		else 
+		{
+			Node * aseed = seed->right;
+			Node * aleft;
+			for (aleft = aseed; aleft->left; aleft = aleft->left);
+			aleft->left = seed->left;
+			delete seed;
+			seed = aseed;
+			seed->parent = 0;
+		}
+	}
+	else 
+	{
+		Node * & p = n->parent;
+		if (n == p->left)
+			p->left = 0;
+		else
+			p->right = 0;
+		insertTree(p, n->left);
+		insertTree(p, n->right);
+		delTree(n);
+	}
+	sizeset--;
+}
+template <typename T>  int MySet<T>::size() const
+{ 
+	return sizeset;
+}
+template <typename T>  bool MySet<T>::contains(const T& elem) const
+{
+	if (findNode(elem, root))
 		{
 			return true;
 		}
-
-	}
 	return false;
-}
-template <class T> MySet<T>& MySet<T>::operator=(const MySet<T>& a)
-{
-	sizeset = a.sizeset;
-	capacity = sizeset + 1;
-	if (sizeset != 0)
-	{
-		if (mass != 0) delete[] mass;
-		mass = new T[capacity];
-		for (int i = 0; i<sizeset; i++)
-			mass[i] = a.mass[i];
-	}
-	return *this;
-}
-
-template <class T> ostream& operator <<(ostream& out, const MySet<T>& a)
-{
-	if (a.sizeset == 0)
-	{
-		out << "Empty Set" << endl;
-		return out;
-	}
-	for (int i = 0; i < a.sizeset; i++)
-		out << a.mass[i] << " ";
-	return out;
-}
-template <class T>	void MySet<T>::remove(const T& elem) // Производится поиск указанного элемента в множестве помощью
-{                                                            // прямого перебора. Сложность O(N).
-	int i = 0;
-	for (i ; mass[i] != elem && i < sizeset; i++); 
-	if (i == sizeset && mass[sizeset] != elem)
-	{
-		return;
-	};
-	for (int j = i; j < sizeset - 1; j++) 
-		mass[j] = mass[j + 1];         
-	sizeset--;
-}
-template <class T> MySet<T>::~MySet()
-{
-	if (mass)
-		delete[] mass;
 };
