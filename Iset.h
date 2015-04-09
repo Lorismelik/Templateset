@@ -6,7 +6,7 @@ public:
 
 	virtual void remove(const T& elem) = 0;
 
-	virtual bool contains(const T& elem) const = 0;
+
 
 	virtual int size() const = 0;
 };
