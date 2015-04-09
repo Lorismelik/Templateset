@@ -57,8 +57,8 @@ public  ISet<T>
 		n = 0;
 	}
 
-	Node * findNode(const T & elem, Node * n) {
-		if (!n)
+	Node * findNode(const T & elem, Node * n) {        //В отличии от прямого поиска количество сравнений
+		if (!n)                                    //теперь логарифм N по основанию 2.
 			return 0;
 		else if (*(n->value) == elem)
 			return n;
@@ -79,7 +79,7 @@ public  ISet<T>
 	}
 
 
-	// Конструктор копирования и оператор присваивания закрыты.
+	// закрытый конструктор копирования
     MySet(const MySet &);
 	MySet operator = (const MySet &);
 
@@ -88,6 +88,7 @@ public:
 	virtual void add(const T & elem);
 	virtual void remove(const T & elem);
 	virtual int size() const;
+	virtual bool contains(const T& elem);
 	void show(std::ostream & ost);
 	~MySet();
 };
@@ -151,8 +152,17 @@ template <typename T> void MySet<T>::show(std::ostream & ost)
 {
 	showNodes(ost, seed);
 }
+template <typename T> bool MySet<T>::contains(const T& elem)
+{
+
+	Node * n = findNode(elem, seed);
+	if (!n)
+	{
+		return false;
+	}
+	return true;
+}
 template <typename T> int MySet<T>::size() const
 { 
 	return sizeset;
 };
-
