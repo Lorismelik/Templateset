@@ -79,7 +79,7 @@ public  ISet<T>
 	}
 
 
-	// закрытый конструктор копирования
+	// Конструктор копирования и оператор присваивания закрыты.
     MySet(const MySet &);
 	MySet operator = (const MySet &);
 
