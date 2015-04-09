@@ -20,4 +20,7 @@ void main()
 	std::cout << "\n";
 	st.remove(i);
 	st.show(std::cout);
+	i = 33;
+	std::cout << "\n";
+	std::cout << st.contains(i);
 }
