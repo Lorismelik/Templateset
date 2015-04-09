@@ -1,5 +1,6 @@
-
+#pragma once
 #include "Iset.h"
+#include <iostream>
 class Exception {};
 template <typename T> class MySet :
 public  ISet<T> 
@@ -67,19 +68,28 @@ public  ISet<T>
 			return findNode(elem, n->right);
 	}
 
+	void showNodes(std::ostream & ost, Node * n) 
+	{
+		char delim = ' ';
+		if (!n)
+			return;
+		showNodes(ost, n->left);
+		ost << *(n->value) << delim;
+		showNodes(ost, n->right);
+	}
+
 
 	// закрытый конструктор копирования
     MySet(const MySet &);
 	MySet operator = (const MySet &);
 
 public:
- 	MySet() : seed(0);
+ 	MySet();
 	virtual void add(const T & elem);
 	virtual void remove(const T & elem);
 	virtual int size() const;
-	virtual  bool contains(const T& elem) const;
+	void show(std::ostream & ost);
 	~MySet();
-
 };
 
 template <typename T> MySet<T>::MySet() : seed(0)
@@ -137,15 +147,12 @@ template <typename T> void MySet<T>::remove(const T & elem)
 	}
 	sizeset--;
 }
-template <typename T>  int MySet<T>::size() const
+template <typename T> void MySet<T>::show(std::ostream & ost)
+{
+	showNodes(ost, seed);
+}
+template <typename T> int MySet<T>::size() const
 { 
 	return sizeset;
-}
-template <typename T>  bool MySet<T>::contains(const T& elem) const
-{
-	if (findNode(elem, root))
-		{
-			return true;
-		}
-	return false;
 };
+
