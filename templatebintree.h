@@ -58,7 +58,7 @@ public  ISet<T>
 	}
 
 	Node * findNode(const T & elem, Node * n) {        //В отличии от прямого поиска количество сравнений
-		if (!n)                                    //теперь логарифм N по основанию 2.
+		if (!n)                                    //теперь натуральный логарифм N, в худшем случае может быть О(N)
 			return 0;
 		else if (*(n->value) == elem)
 			return n;
