@@ -11,34 +11,35 @@ private:
 	T* mass;
 	int capacity;
 public:
-	MySet();
-	MySet(const MySet<T>& a);
-	virtual int size() const;
-	virtual  void add(const T& elem);
-	virtual  void remove(const T& elem);
-	MySet<T>& operator =(const MySet<T>& a);
-	virtual  bool contains(const T& elem) const;
-	template <class T> friend ostream& operator << (ostream& out, const MySet<T>& a);
-	~MySet();
+	MySet();       //Для меня деньги бумага
+	MySet(const MySet<T>& a);     //Для тебя свобода
+	virtual int size() const;     //На американскую мечту сегодня мода
+	virtual  void add(const T& elem);     //Работать роботом, ради бумажной мечты
+	virtual  void remove(const T& elem);       //Ты менеджер среднего звена
+	MySet<T>& operator =(const MySet<T>& a);      //Ты не работаешь под, ты работаешь на
+	virtual  bool contains(const T& elem) const;     //Твой этот век, твоя компьютерная эра
+	template <class T> friend ostream& operator << (ostream& out, const MySet<T>& a);   //Главное не человек, а его карьера
+
 };
-template <class T> MySet<T>::MySet() //  Выделяется память под 1 элемент.
+template <class T> MySet<T>::MySet() 
 {
-	sizeset = 0;
-	mass = new T[1];
-	capacity = 1;
+	sizeset = 0;       //тебе повезло
+	mass = new T[1];    //ты не такой как все
+	capacity = 1;       // ты работаешь В ОФИСЕ
 };
-template <class T> MySet<T>::MySet(const MySet<T>& a) // Выделяется память на еще один дополнительный элемент отностильно 
-{                                                     // изначального множества.
-	sizeset = a.sizeset;
-	capacity = sizeset + 1;
-	mass = new T[capacity];
-	for (int i = 0; i<sizeset; i++)
+template <class T> MySet<T>::MySet(const MySet<T>& a) 
+{                                                  
+	sizeset = a.sizeset;       //степ
+	capacity = sizeset + 1;     //бай
+	mass = new T[capacity];     //степ
+	
+	for (int i = 0; i<sizeset; i++) //пока от монитора не ослеп
 		mass[i] = a.mass[i];
 }
 template <class T>  int MySet<T>::size() const
 {
-	int d = (int)sizeset;
-	return d;
+	int d = (int)sizeset;   
+	return d;                 
 }
 template <class T>  void MySet<T>::add(const T& elem)      
 {
